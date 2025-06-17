@@ -33,7 +33,9 @@ struct DepartureTable: View {
                 // Table Rows
                 ForEach(departures) { departure in
                     DepartureRow(departure: departure)
-                    Divider()
+                    if departure.id != departures.last?.id {
+                        Divider()
+                    }
                 }
             }
         }
@@ -52,7 +54,7 @@ struct DepartureRow: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             // Departure time
-            VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 4) {
                 Text(departure.departureDescription)
                     .font(AppTheme.Typography.body)
                     .foregroundColor(Color.primary)
@@ -71,7 +73,7 @@ struct DepartureRow: View {
                 .foregroundColor(getStatusColor(departure: departure))
                 .frame(maxWidth: .infinity, alignment: .trailing)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 2)
     }
     
     private func getStatusText(departure: Departure) -> String {
@@ -106,26 +108,26 @@ struct DepartureRow: View {
     private func getStatusColor(departure: Departure) -> Color {
         if let realtime = departure.realtime {
             if realtime.isCancelled || realtime.isSkipped {
-                return .red
+                return AppTheme.Colors.error
             }
             
             // Check if it's running late or early
             if let expectedDate = parseDate(realtime.expectedDepartureUtc),
-              let scheduledDate = parseDate(departure.scheduledDepartureUtc) {
+               let scheduledDate = parseDate(departure.scheduledDepartureUtc) {
                 let delay = expectedDate.timeIntervalSince(scheduledDate)
                 let minutes = Int(round(delay / 60))
                 
                 if minutes > 0 {
-                    return .red // Late
+                    return AppTheme.Colors.error // Late
                 } else if minutes < 0 {
-                    return .orange // Early
+                    return AppTheme.Colors.success // Early
                 } else {
-                    return .blue // On time
+                    return AppTheme.Colors.success // On time
                 }
             }
         }
         
-        return .blue
+        return AppTheme.Colors.success
     }
     
     // Helper function to parse dates consistently
@@ -203,3 +205,4 @@ struct DepartureRow: View {
     ])
     .padding()
 } 
+
