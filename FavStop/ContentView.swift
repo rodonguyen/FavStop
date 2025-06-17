@@ -8,14 +8,33 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var currentScreen: Screen = .landing
+    
+    enum Screen {
+        case landing
+        case login
+        case dashboard
+    }
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            switch currentScreen {
+            case .landing:
+                LandingView(onGetStarted: {
+                    await navigateToDashboard()
+                })
+            case .login:
+                LoginView()
+            case .dashboard:
+                DashboardView()
+            }
         }
-        .padding()
+    }
+    
+    private func navigateToDashboard() async {
+        // Here you could add any async setup needed before navigation
+        // For example, checking authentication state, loading initial data, etc.
+        currentScreen = .dashboard
     }
 }
 

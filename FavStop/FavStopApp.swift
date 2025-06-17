@@ -12,6 +12,10 @@ struct FavStopApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.none) // Respects system dark/light mode setting
+                // Alternative options:
+                // .preferredColorScheme(.dark)  // Force dark mode
+                // .preferredColorScheme(.light) // Force light mode
         }
     }
 }
